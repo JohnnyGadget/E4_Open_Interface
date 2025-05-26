@@ -10,13 +10,13 @@ An Interface for the Emu E4 Sampler
 
 This software is an interface for Emu EOS on the Emu E4 Sampler. Written in Python so it could be relatively easy to modify and update for just about anyone with an idea. MIT LiCENSED 🙏😌:D 
 "E4 Open Interface" is Open Source, which means that it is free for anyone to use and the source code is available for anyone to look at and modify. And anyone can contribute fixes or enhancements to the project.
-
+[![License: MIT](https://cdn.prod.website-files.com/5e0f1144930a8bc8aace526c/65dd9eb5aaca434fac4f1c34_License-MIT-blue.svg)](/LICENSE)
 
 ### ✍️ Authors
 
 JohnnyGadget
 
-[![License: MIT](https://cdn.prod.website-files.com/5e0f1144930a8bc8aace526c/65dd9eb5aaca434fac4f1c34_License-MIT-blue.svg)](/LICENSE)
+
 
 
 ## 🚀 Usage
