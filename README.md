@@ -37,8 +37,6 @@ And be sure to specify any other minimum requirements like Python versions or op
 *You may be inclined to add development instructions here, don't.*
 
 
-## 💭 Feedback and Contributing
+## 💭 Feedback, Ideas and Contributing
 
-Add a link to the Discussions tab in your repo and invite users to open issues for bugs/feature requests.
-
-This is also a great place to invite others to contribute in any ways that make sense for your project. Point people to your DEVELOPMENT and/or CONTRIBUTING guides if you have them.
+(https://github.com/JohnnyGadget/E4_Open_Interface/discussions/1)
