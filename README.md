@@ -29,7 +29,7 @@ To Be Updated!
 Simple, understandable installation instructions!
 
 ```bash
-pip install my-package
+pip install E4_Open_Interface
 ```
 
 And be sure to specify any other minimum requirements like Python versions or operating systems.
