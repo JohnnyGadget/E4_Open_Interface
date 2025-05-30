@@ -1,0 +1,57 @@
+TODO_DEV_NOTES.txt
+
+
+[[[======= Build command =======================================]]]
+
+pyinstaller --onefile --hidden-import=mido.backends.rtmidi main.py
+
+[[[======= Build command =======================================]]]
+
+
+
+autosave settings for 'midi port names' and 'key codes' and 'user CC names'.
+
+keyboard settings menu
+
+lcd display
+
+fix the cords panel. best solution for now might be to leave params at default value. 
+sometimes there are extra bits in the preset dump and it throws the values off.
+best solution is to send a single parameter value request for each cord parameter. 
+1.send a voice select message. 
+2.send the parameter requests 
+3.update the ui values with the responses from the E4. 
+4.select next voice...
+2. ... 3. ... etc
+
+
+sample names... 
+voice creation controls... new voice, delete voice, delete zone, etc
+
+
+velocity curve visual
+
+complete the cc ctrl panel, save user cc names.
+
+an onscreen midi keyboard?
+
+add rythm options to the metronome? the option to play chords, a chord selector? multiple chords selectors? 4 note/chord selectors? yes! 1,000,000 selectors!
+
+correct some filter parameter GAIN conversion values. update filter parameter Labels when receiving param value from e4 
+
+color themes?
+
+
+More todo's on the way! i don't feel like typing them atm.
+
+
+
+some presets seem to have random bits that are not described in the sysex document, and i've so far 
+been unable to figure out a way to detect the extra bits 100% of the time programatically, so they cause the parser 
+to error or associate the values with the wrong parameter.
+i suspect the extra bits are image corruption from the banks having been copied and recopied because there doesn't seem to be a consistent pattern.
+In the file preset_dump_study i've highlighted the extra bits for study in case anyone would like to take a look 
+and see if they can figure out a way to detect the extra bits when they appear. there doesn't seem to be any missing bits, just extra bits.
+
+
+
