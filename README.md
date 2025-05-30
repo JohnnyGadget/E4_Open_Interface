@@ -23,7 +23,8 @@ JohnnyGadget
 
 ## 🚀 Usage
 
-To Be Updated!
+To Be Updated! 
+Mostly self explanatory to anyone familier with Emu EOS.
 
 
 ## ⬇️ Installation
