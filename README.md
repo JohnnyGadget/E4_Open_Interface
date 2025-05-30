@@ -35,8 +35,18 @@ To Be Updated!
 Simple, understandable installation instructions!
 
 ```bash
-pip install my-package
+pip install e4_open_interface
 ```
+* Dependencies *
+```bash
+pip install wxPython
+```
+
+```bash
+pip install mido[ports-rtmidi]
+```
+
+
 
 And be sure to specify any other minimum requirements like Python versions or operating systems.
 
