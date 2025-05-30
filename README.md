@@ -11,12 +11,8 @@
 This software is an interface for Emu EOS on the Emu E4 Sampler. Written in Python so it could be easy to modify and update for just about anyone with an idea to do so. MIT LiCENSED :D
 
 
-All are Encouraged to modify it as they see fit and make Commit requests to the primary project. If the commit makes sense it will be accepted.
+All are Encouraged to modify it as they see fit and make Commit requests to the primary project.
 
-Install pyinstaller by opening the terminal and running the command pip install pyinstaller.
-Navigate to the directory where your Python script is located using the 'cd' command.
-Run the command pyinstaller --onefile your_script_name.py to compile your Python script into an executable file. Replace 'your_script_name.py' with the name of your Python script.
-Once the process is complete, you will find the generated executable file in the 'dist' directory.
 
 ### ✍️ Authors
 
