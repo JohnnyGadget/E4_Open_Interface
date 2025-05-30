@@ -37,6 +37,7 @@ Simple, understandable installation instructions!
 ```bash
 pip install e4_open_interface
 ```
+
 * Dependencies *
 ```bash
 pip install wxPython
@@ -46,6 +47,11 @@ pip install wxPython
 pip install mido[ports-rtmidi]
 ```
 
+* Build Command *
+...bash
+pyinstaller --onefile --hidden-import=mido.backends.rtmidi main.py
+
+...
 
 
 And be sure to specify any other minimum requirements like Python versions or operating systems.
