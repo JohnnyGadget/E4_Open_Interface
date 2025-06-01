@@ -4,6 +4,7 @@
 ## 🌟 Highlights
 
 - Editing Preset parameters on the Emu E4 Sampler made easy!
+- Get the pre-release EXE from the releases section here > https://github.com/JohnnyGadget/E4_Open_Interface/releases/tag/pre-release
 
 
 ## ℹ️ Overview
