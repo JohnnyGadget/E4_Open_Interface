@@ -11,6 +11,7 @@
 
 This software is an interface for Emu EOS on the Emu E4 Sampler. Written in Python so it could be easy to modify and update for just about anyone with an idea to do so. MIT LiCENSED :D
 
+![voice_edit](https://github.com/user-attachments/assets/dcfb8b34-cc1e-47ed-9528-1caa522508b9)
 
 All are Encouraged to modify it as they see fit and make Commit requests to the primary project.
 
