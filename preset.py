@@ -142,8 +142,8 @@ class InitCtrlrs(wx.Panel):
             # label.SetBackgroundColour(wx.Colour(176, 186, 160, 127))
             label.SetBackgroundColour("light grey")
             grid_sizer.Add(label, flag=wx.Left|wx.TOP|wx.BOTTOM|wx.ALIGN_CENTER_VERTICAL, border=5)
-            if isinstance(label, DraggableNumber):
-                main.controls.dragger_by_id[label.Id] = label
+            # if isinstance(label, DraggableNumber):
+            #     main.controls.dragger_by_id[label.Id] = label
             
         seg0 = [
             label1,  label3, label5, label7
@@ -162,7 +162,11 @@ class InitCtrlrs(wx.Panel):
         main_sizer.Add(grid_sizer, flag=wx.ALL, border=10)
         self.SetSizer(main_sizer)
 
-        
+    def update_ctrlrs(self):
+            self.E4_PRESET_CTRL_A.value = self.main.parsed_data["E4_PRESET_CTRL_A"]
+            self.E4_PRESET_CTRL_B.value = self.main.parsed_data["E4_PRESET_CTRL_B"]
+            self.E4_PRESET_CTRL_C.value = self.main.parsed_data["E4_PRESET_CTRL_C"]
+            self.E4_PRESET_CTRL_D.value = self.main.parsed_data["E4_PRESET_CTRL_D"]
             
         
         
@@ -191,11 +195,11 @@ class Preset_Basic(wx.Panel):
         grid_sizer = wx.GridSizer(rows=8, cols=2, hgap=10, vgap=10)
 
         label1 = wx.StaticText(self, label="Current Preset")
-        self.E4_PRESET_NUMBER =  wx.StaticText(self, label = str(0), style=wx.TE_PROCESS_ENTER | wx.TE_CENTRE)
+        self.E4_PRESET_NUMBER =  wx.StaticText(self, label = str(0), style=wx.TE_CENTRE)
         char_width = wx.ScreenDC().GetTextExtent('W')[0]
         self.E4_PRESET_NUMBER.SetMinSize((char_width * 3, -1))
         self.E4_PRESET_NUMBER.SetMaxSize((char_width * 3, -1))
-        self.E4_PRESET_NUMBER.Bind(wx.EVT_TEXT_ENTER, self._onPresetNumberCommit)
+        # self.E4_PRESET_NUMBER.Bind(wx.EVT_TEXT_ENTER, self._onPresetNumberCommit)
         
         label3 = wx.StaticText(self, label="Preset Name")
         self.E4_PRESET_NAME = wx.TextCtrl(self, id = 5, style=wx.TE_PROCESS_ENTER)
@@ -203,25 +207,26 @@ class Preset_Basic(wx.Panel):
         self.E4_PRESET_NAME.SetMinSize((char_width * 16, -1))
         self.E4_PRESET_NAME.SetMaxSize((char_width * 16, -1))
         self.E4_PRESET_NAME.Bind(wx.EVT_TEXT_ENTER, self.change_preset_name)
-        main.controls.entry_by_id[E4_PRESET_NAME] = self.E4_PRESET_NAME
+        # main.controls.entry_by_id[E4_PRESET_NAME] = self.E4_PRESET_NAME
         
         label5 = wx.StaticText(self, label="Volume dB")
         self.E4_PRESET_VOLUME = DraggableNumber(self, id=1, value=0, min_val=-96, max_val=+10, callback = main._onAnyControlChanged)
         self.E4_PRESET_VOLUME.SetMinSize((80, -1))
         self.E4_PRESET_VOLUME.SetMaxSize((80, -1))
         self.E4_PRESET_VOLUME.SetBackgroundColour(greencontrol)
-        main.controls.dragger_by_id[E4_PRESET_VOLUME] = self.E4_PRESET_VOLUME
+        # main.controls.dragger_by_id[E4_PRESET_VOLUME] = self.E4_PRESET_VOLUME
         
-        transposelabel = wx.StaticText(self, label="Transpose C +/-0 (Unison)")
-        transpose_spin = wx.SpinCtrl(self, id=0, min=-24, max=24, initial=0)
+        self.transposelabel = wx.StaticText(self, label="Transpose C +/-0 (Unison)")
+        self.E4_PRESET_TRANSPOSE = wx.SpinCtrl(self, id=0, min=-24, max=24, initial=0)
 
         def on_transpose_changed(evt):
-            val = transpose_spin.GetValue()
-            transposelabel.SetLabel(f"Transpose {PRESET_TRANSPOSE_TABLE[val]}")
-            main.send_parameter_edit(transpose_spin.Id, val)
+            val = self.E4_PRESET_TRANSPOSE.GetValue()
+            self.transposelabel.SetLabel(f"Transpose {PRESET_TRANSPOSE_TABLE[val]}")
+            main.send_parameter_edit(self.E4_PRESET_TRANSPOSE.Id, val)
 
-        transpose_spin.Bind(wx.EVT_SPINCTRL, on_transpose_changed)
-        main.controls.spin_by_id[E4_PRESET_TRANSPOSE] = transpose_spin
+        self.E4_PRESET_TRANSPOSE.Bind(wx.EVT_SPINCTRL, on_transpose_changed)
+        # main.controls.spin_by_id[E4_PRESET_TRANSPOSE] = self.E4_PRESET_TRANSPOSE
+        
         lblfill5 = wx.StaticText(self)
         lblfill6 = wx.StaticText(self)
         lblfill7 = wx.StaticText(self)
@@ -230,14 +235,14 @@ class Preset_Basic(wx.Panel):
         lblfill10 = wx.StaticText(self)
 
         labels2 = [
-                label1, self.E4_PRESET_NUMBER, lblfill5, lblfill6, label3, self.E4_PRESET_NAME, lblfill7, lblfill8, label5, self.E4_PRESET_VOLUME, lblfill9, lblfill10, transposelabel,
-                transpose_spin,
+                label1, self.E4_PRESET_NUMBER, lblfill5, lblfill6, label3, self.E4_PRESET_NAME, lblfill7, lblfill8, label5, self.E4_PRESET_VOLUME, lblfill9, lblfill10, self.transposelabel,
+                self.E4_PRESET_TRANSPOSE,
         ]
         for label in labels2:
             grid_sizer.Add(label, wx.ALIGN_CENTER_VERTICAL, border=5)
             label.SetBackgroundColour("light grey")
             if not self.E4_PRESET_NUMBER or not self.E4_PRESET_NAME:
-                if label == label1 or label == label3 or label == label5 or label == transposelabel:
+                if label == label1 or label == label3 or label == label5 or label == self.transposelabel:
                     label.SetMinSize((120, 20))
                 else:
                     label.SetMinSize((80, 60))
@@ -245,7 +250,7 @@ class Preset_Basic(wx.Panel):
             
             
         seg11 = [
-                    self.E4_PRESET_NAME, self.E4_PRESET_VOLUME, transpose_spin
+                    self.E4_PRESET_NAME, self.E4_PRESET_VOLUME, self.E4_PRESET_TRANSPOSE
         ]
         for label in seg11:
             label.SetBackgroundColour(wx.Colour(greencontrol)) 
@@ -310,8 +315,14 @@ class Preset_Basic(wx.Panel):
         
         self.main.get_preset()
         evt.Skip()
-
-
+        
+    def update_params(self):
+        self.E4_PRESET_NUMBER.SetLabel(str(self.main.parsed_data["E4_PRESET_NUMBER"]))
+        self.E4_PRESET_NAME.SetLabel(self.main.parsed_data["E4_PRESET_NAME"])
+        self.E4_PRESET_VOLUME.value = self.main.parsed_data["E4_PRESET_VOLUME"]
+        self.E4_PRESET_TRANSPOSE.value = str(self.main.parsed_data["E4_PRESET_TRANSPOSE"])
+        transpose_value = PRESET_TRANSPOSE_TABLE[self.main.parsed_data["E4_PRESET_TRANSPOSE"]]
+        self.transposelabel.SetLabel(f"Transpose {transpose_value}")
 
 
 
@@ -336,7 +347,6 @@ class PresetPanel(scrolled.ScrolledPanel):
         self.preset_data = []
         self.device_id = main.device_id
         self.main = main
-        self.send_sysex = main.send_sysex
 
 
         
@@ -360,8 +370,8 @@ class PresetPanel(scrolled.ScrolledPanel):
 
         self.initctrlrs_panel = wx.Panel(self, size=(400, 180), pos=(pad , 180 + pad + pad))
         self.initctrlrs_panel.SetBackgroundColour("light grey")
-        box2 = wx.StaticBox(self.initctrlrs_panel, label="Initial Controllers")
-        initctrlrs_sizer = wx.StaticBoxSizer(box2, wx.VERTICAL)
+        self.init_ctrlr_box = wx.StaticBox(self.initctrlrs_panel, label="Initial Controllers")
+        initctrlrs_sizer = wx.StaticBoxSizer(self.init_ctrlr_box, wx.VERTICAL)
         # === Inner content ===
         self.init_ctrlrs = InitCtrlrs(self.initctrlrs_panel, main=main)
 
@@ -379,6 +389,10 @@ class PresetPanel(scrolled.ScrolledPanel):
         self.SetVirtualSize((1600, 1100))
         self.SetScrollRate(20, 20)
         self.SetupScrolling(scroll_x=True, scroll_y=True, scrollToTop=False)
+        
+    def update_params(self):
+        self.preset.update_params()
+        self.init_ctrlrs.update_ctrlrs()
 
 
 

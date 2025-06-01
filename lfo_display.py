@@ -221,7 +221,7 @@ class LFO1(wx.Panel):
 
         self.label1 = wx.StaticText(self, label="Clock Sync")
         self.label2 = wx.CheckBox(self, id = 109)
-        self.label2.SetValue(bool(voice_dict["params"]["E4_VOICE_LFO2_SYNC"]))
+        self.label2.SetValue(bool(voice_dict["params"]["E4_VOICE_LFO_SYNC"]))
         self.label2.Bind(wx.EVT_CHECKBOX, self.onChange)
         # main.controls.check_by_id[109] = self.label2
         

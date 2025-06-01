@@ -57,7 +57,8 @@ class Amp_Env_Ctrls(wx.Panel):
         label26 = wx.StaticText(self, label="Depth")
         self.env_depth = DraggableNumber(self, id = 68, value=voice_dict["params"]["E4_VOICE_VOLENV_DEPTH"], min_val=0, max_val=16, callback = main._onAnyControlChanged)
         
-        self.envelope_ctrls = [ self.atkrate1,
+        self.envelope_ctrls = [ 
+                self.atkrate1,
                 self.atkamt1,
                 self.atkrate2, 
                 self.atkamt2,
@@ -118,16 +119,15 @@ class Amp_Env_Ctrls(wx.Panel):
 #====================================================================================================
 #====================================================================================================
 #==================================    FILTER  ==================================================================
-        
 class Filter_Env_Ctrls(wx.Panel):
-    def __init__(self, parent, parent_panel, label, main, voice_dict):
+    def __init__(self, parent, parent_panel, label, main, amp_env_depth_ctrl, voice_dict):
         super().__init__(parent_panel)
 
         main_sizer = wx.BoxSizer(wx.VERTICAL)
 
-        grid_sizer = wx.GridSizer(rows=5, cols=5, hgap=10, vgap=5)
+        grid_sizer = wx.GridSizer(rows=6, cols=5, hgap=10, vgap=5)
 
-
+    
         label1 = wx.StaticText(self, label="")
         label2 = wx.StaticText(self, label="SEG 1")
         label3 = wx.StaticText(self, label="SEG 1")
@@ -141,24 +141,28 @@ class Filter_Env_Ctrls(wx.Panel):
         label10 = wx.StaticText(self, label="Amt")
         
         label11 = wx.StaticText(self, label="Attack")
-        self.atkrate1 = DraggableNumber(self, id = 93, value=50, min_val=voice_dict["params"]["E4_VOICE_FENV_SEG0_RATE"], max_val=127, callback = main._onAnyControlChanged)
-        self.atkamt1 = DraggableNumber(self, id = 94, value=100, min_val=voice_dict["params"]["E4_VOICE_FENV_SEG0_TGTLVL"], max_val=100, callback = main._onAnyControlChanged)
-        self.atkrate2 = DraggableNumber(self, id = 95, value=50, min_val=voice_dict["params"]["E4_VOICE_FENV_SEG1_RATE"], max_val=127, callback = main._onAnyControlChanged)
-        self.atkamt2 = DraggableNumber(self, id = 96, value=100, min_val=voice_dict["params"]["E4_VOICE_FENV_SEG1_TGTLVL"], max_val=100, callback = main._onAnyControlChanged)
+        self.atkrate1 = DraggableNumber(self, id = 93, value= voice_dict["params"]["E4_VOICE_FENV_SEG0_RATE"], min_val=0, max_val=127, callback = main._onAnyControlChanged)
+        self.atkamt1 = DraggableNumber(self, id = 94, value=voice_dict["params"]["E4_VOICE_FENV_SEG0_TGTLVL"], min_val=-100, max_val=100, callback = main._onAnyControlChanged)
+        self.atkrate2 = DraggableNumber(self, id = 95, value=voice_dict["params"]["E4_VOICE_FENV_SEG1_RATE"], min_val=0, max_val=127, callback = main._onAnyControlChanged)
+        self.atkamt2 = DraggableNumber(self, id = 96, value=voice_dict["params"]["E4_VOICE_FENV_SEG1_TGTLVL"], min_val=-100, max_val=100, callback = main._onAnyControlChanged)
         
         label16 = wx.StaticText(self, label="Decay")       
-        self.dcyrate1 = DraggableNumber(self, id = 97, value=50, min_val=voice_dict["params"]["E4_VOICE_FENV_SEG2_RATE"], max_val=127, callback = main._onAnyControlChanged)
-        self.dcyamt1 = DraggableNumber(self, id = 98, value=50, min_val=voice_dict["params"]["E4_VOICE_FENV_SEG2_TGTLVL"], max_val=100, callback = main._onAnyControlChanged)
-        self.dcyrate2  = DraggableNumber(self, id = 99, value=50, min_val=voice_dict["params"]["E4_VOICE_FENV_SEG3_RATE"], max_val=127, callback = main._onAnyControlChanged)
-        self.dcyamt2 = DraggableNumber(self, id = 100, value=50, min_val=voice_dict["params"]["E4_VOICE_FENV_SEG3_TGTLVL"], max_val=100, callback = main._onAnyControlChanged)
+        self.dcyrate1 = DraggableNumber(self, id = 97, value=voice_dict["params"]["E4_VOICE_FENV_SEG2_RATE"], min_val=0, max_val=127, callback = main._onAnyControlChanged)
+        self.dcyamt1 = DraggableNumber(self, id = 98, value=voice_dict["params"]["E4_VOICE_FENV_SEG2_TGTLVL"], min_val=-100, max_val=100, callback = main._onAnyControlChanged)
+        self.dcyrate2  = DraggableNumber(self, id = 99, value=voice_dict["params"]["E4_VOICE_FENV_SEG3_RATE"], min_val=0, max_val=127, callback = main._onAnyControlChanged)
+        self.dcyamt2 = DraggableNumber(self, id = 100, value=voice_dict["params"]["E4_VOICE_FENV_SEG3_TGTLVL"], min_val=-100, max_val=100, callback = main._onAnyControlChanged)
 
         label21 = wx.StaticText(self, label="Release")
-        self.rlsrate1 = DraggableNumber(self, id = 101, value=50, min_val=voice_dict["params"]["E4_VOICE_FENV_SEG4_RATE"], max_val=127, callback = main._onAnyControlChanged)
-        self.rlsamt1 = DraggableNumber(self, id = 102, value=0, min_val=voice_dict["params"]["E4_VOICE_FENV_SEG4_TGTLVL"], max_val=100, callback = main._onAnyControlChanged)
-        self.rlsrate2 = DraggableNumber(self, id = 103, value=50, min_val=voice_dict["params"]["E4_VOICE_FENV_SEG5_RATE"], max_val=127, callback = main._onAnyControlChanged)
-        self.rlsamt2 = DraggableNumber(self, id = 104, value=0, min_val=voice_dict["params"]["E4_VOICE_FENV_SEG5_TGTLVL"], max_val=100, callback = main._onAnyControlChanged)
+        self.rlsrate1 = DraggableNumber(self, id = 101, value=voice_dict["params"]["E4_VOICE_FENV_SEG4_RATE"], min_val=0, max_val=127, callback = main._onAnyControlChanged)
+        self.rlsamt1 = DraggableNumber(self, id = 102, value=voice_dict["params"]["E4_VOICE_FENV_SEG4_TGTLVL"], min_val=-100, max_val=100, callback = main._onAnyControlChanged)
+        self.rlsrate2 = DraggableNumber(self, id = 103, value=voice_dict["params"]["E4_VOICE_FENV_SEG5_RATE"], min_val=0, max_val=127, callback = main._onAnyControlChanged)
+        self.rlsamt2 = DraggableNumber(self, id = 104, value=voice_dict["params"]["E4_VOICE_FENV_SEG5_TGTLVL"], min_val=-100, max_val=100, callback = main._onAnyControlChanged)
         
-        self.envelope_ctrls = [ self.atkrate1,
+        label26 = wx.StaticText(self, label="Depth")
+        self.env_depth = DraggableNumber(self, id = 68, value=voice_dict["params"]["E4_VOICE_VOLENV_DEPTH"], min_val=0, max_val=16, callback = main._onAnyControlChanged)
+        
+        self.envelope_ctrls = [ 
+                self.atkrate1,
                 self.atkamt1,
                 self.atkrate2, 
                 self.atkamt2,
@@ -171,13 +175,15 @@ class Filter_Env_Ctrls(wx.Panel):
                 self.rlsrate1,
                 self.rlsamt1,
                 self.rlsrate2, 
-                self.rlsamt2,]
+                self.rlsamt2,
+                self.env_depth]
+        
 
         labels = [
             label1, label2, label3, label4, label5, label6, label7, label8, label9, label10,
             label11, self.atkrate1, self.atkamt1, self.atkrate2, self.atkamt2, label16, 
             self.dcyrate1, self.dcyamt1, self.dcyrate2, self.dcyamt2,
-            label21, self.rlsrate1, self.rlsamt1, self.rlsrate2, self.rlsamt2,
+            label21, self.rlsrate1, self.rlsamt1, self.rlsrate2, self.rlsamt2,# label26, self.env_depth
         ]
         
 
@@ -190,7 +196,7 @@ class Filter_Env_Ctrls(wx.Panel):
         
             
         seg1 = [label2, label3, label7, label8, self.atkrate1, self.atkamt1,  
-                self.dcyrate1, self.dcyamt1, self.rlsrate1, self.rlsamt1, ] 
+                self.dcyrate1, self.dcyamt1, self.rlsrate1, self.rlsamt1,self.env_depth ] 
 
         for label in seg1:
             label.SetBackgroundColour(wx.Colour(greencontrol)) 
@@ -200,27 +206,45 @@ class Filter_Env_Ctrls(wx.Panel):
         for label in seg2:
             label.SetBackgroundColour(wx.Colour(blue1))  
             
-        seg3 = [label11, label16,  label21, label7, label8,  label9, label10]   
+        seg3 = [label11, label16,  label21, label7, label8,  label9, label10, label26]   
         for label in seg3:
             label.SetBackgroundColour(wx.Colour(yellow))  
             
-
+        
         main_sizer.Add(grid_sizer, flag=wx.ALL, border=10)
         self.SetSizer(main_sizer)
-
         
+    def _forward_callback(self, event):
+        ctrl = event.GetEventObject()
+        self.main._onAnyControlChanged(event)
+        # print(ctrl.value)
+        
+        
+
+
+
+
+
+
+
+
+
+
+
+
 #====================================================================================================
 #====================================================================================================
-#==================================    FILTER  ==================================================================
+#==================================    aux  ==================================================================
         
 class Aux_Env_Ctrls(wx.Panel):
-    def __init__(self, parent, parent_panel, label, main, voice_dict):
+    def __init__(self, parent, parent_panel, label, main, amp_env_depth_ctrl, voice_dict):
         super().__init__(parent_panel)
 
         main_sizer = wx.BoxSizer(wx.VERTICAL)
 
-        grid_sizer = wx.GridSizer(rows=5, cols=5, hgap=10, vgap=5)
+        grid_sizer = wx.GridSizer(rows=6, cols=5, hgap=10, vgap=5)
 
+    
         label1 = wx.StaticText(self, label="")
         label2 = wx.StaticText(self, label="SEG 1")
         label3 = wx.StaticText(self, label="SEG 1")
@@ -232,26 +256,31 @@ class Aux_Env_Ctrls(wx.Panel):
         label8 = wx.StaticText(self, label="Amt")
         label9 = wx.StaticText(self, label="Rate")
         label10 = wx.StaticText(self, label="Amt")
-        
+
+                
         label11 = wx.StaticText(self, label="Attack")
-        self.atkrate1 = DraggableNumber(self, id = 117, value=voice_dict["params"]["E4_VOICE_AENV_SEG0_RATE"], min_val = 0, max_val=127, callback = main._onAnyControlChanged)
-        self.atkamt1 = DraggableNumber(self, id = 118, value=voice_dict["params"]["E4_VOICE_AENV_SEG0_TGTLVL"], min_val= -100, max_val=100, callback = main._onAnyControlChanged)
-        self.atkrate2 = DraggableNumber(self, id = 119, value=voice_dict["params"]["E4_VOICE_AENV_SEG1_RATE"], min_val = 0, max_val=127, callback = main._onAnyControlChanged)
-        self.atkamt2 = DraggableNumber(self, id = 120, value=voice_dict["params"]["E4_VOICE_AENV_SEG1_TGTLVL"], min_val= -100, max_val=100, callback = main._onAnyControlChanged)
+        self.atkrate1 = DraggableNumber(self, id = 117, value= voice_dict["params"]["E4_VOICE_AENV_SEG0_RATE"], min_val=0, max_val=127, callback = main._onAnyControlChanged)
+        self.atkamt1 = DraggableNumber(self, id = 118, value=voice_dict["params"]["E4_VOICE_AENV_SEG0_TGTLVL"], min_val=-100, max_val=100, callback = main._onAnyControlChanged)
+        self.atkrate2 = DraggableNumber(self, id = 119, value=voice_dict["params"]["E4_VOICE_AENV_SEG1_RATE"], min_val=0, max_val=127, callback = main._onAnyControlChanged)
+        self.atkamt2 = DraggableNumber(self, id = 120, value=voice_dict["params"]["E4_VOICE_AENV_SEG1_TGTLVL"], min_val=-100, max_val=100, callback = main._onAnyControlChanged)
         
         label16 = wx.StaticText(self, label="Decay")       
-        self.dcyrate1 = DraggableNumber(self, id = 121, value=voice_dict["params"]["E4_VOICE_AENV_SEG2_RATE"], min_val = 0, max_val=127, callback = main._onAnyControlChanged)
-        self.dcyamt1 = DraggableNumber(self, id = 122, value=voice_dict["params"]["E4_VOICE_AENV_SEG2_TGTLVL"], min_val= -100, max_val=100, callback = main._onAnyControlChanged)
-        self.dcyrate2  = DraggableNumber(self, id = 123, value=voice_dict["params"]["E4_VOICE_AENV_SEG3_RATE"], min_val = 0, max_val=127, callback = main._onAnyControlChanged)
-        self.dcyamt2 = DraggableNumber(self, id = 124, value=voice_dict["params"]["E4_VOICE_AENV_SEG3_TGTLVL"], min_val= -100, max_val=100, callback = main._onAnyControlChanged)
+        self.dcyrate1 = DraggableNumber(self, id = 121, value=voice_dict["params"]["E4_VOICE_AENV_SEG2_RATE"], min_val=0, max_val=127, callback = main._onAnyControlChanged)
+        self.dcyamt1 = DraggableNumber(self, id = 122, value=voice_dict["params"]["E4_VOICE_AENV_SEG2_TGTLVL"], min_val=-100, max_val=100, callback = main._onAnyControlChanged)
+        self.dcyrate2  = DraggableNumber(self, id = 123, value=voice_dict["params"]["E4_VOICE_AENV_SEG3_RATE"], min_val=0, max_val=127, callback = main._onAnyControlChanged)
+        self.dcyamt2 = DraggableNumber(self, id = 124, value=voice_dict["params"]["E4_VOICE_AENV_SEG3_TGTLVL"], min_val=-100, max_val=100, callback = main._onAnyControlChanged)
 
         label21 = wx.StaticText(self, label="Release")
-        self.rlsrate1 = DraggableNumber(self, id = 125, value=voice_dict["params"]["E4_VOICE_AENV_SEG4_RATE"], min_val = 0, max_val=127, callback = main._onAnyControlChanged)
-        self.rlsamt1 = DraggableNumber(self, id = 126, value=voice_dict["params"]["E4_VOICE_AENV_SEG4_TGTLVL"], min_val= -100, max_val=100, callback = main._onAnyControlChanged)
-        self.rlsrate2 = DraggableNumber(self, id = 127, value=voice_dict["params"]["E4_VOICE_AENV_SEG5_RATE"], min_val = 0, max_val=127, callback = main._onAnyControlChanged)
-        self.rlsamt2 = DraggableNumber(self, id = 128, value=voice_dict["params"]["E4_VOICE_AENV_SEG5_TGTLVL"], min_val= -100, max_val=100, callback = main._onAnyControlChanged)
+        self.rlsrate1 = DraggableNumber(self, id = 125, value=voice_dict["params"]["E4_VOICE_AENV_SEG4_RATE"], min_val=0, max_val=127, callback = main._onAnyControlChanged)
+        self.rlsamt1 = DraggableNumber(self, id = 126, value=voice_dict["params"]["E4_VOICE_AENV_SEG4_TGTLVL"], min_val=-100, max_val=100, callback = main._onAnyControlChanged)
+        self.rlsrate2 = DraggableNumber(self, id = 127, value=voice_dict["params"]["E4_VOICE_AENV_SEG5_RATE"], min_val=0, max_val=127, callback = main._onAnyControlChanged)
+        self.rlsamt2 = DraggableNumber(self, id = 128, value=voice_dict["params"]["E4_VOICE_AENV_SEG5_TGTLVL"], min_val=-100, max_val=100, callback = main._onAnyControlChanged)
         
-        self.envelope_ctrls = [ self.atkrate1,
+        label26 = wx.StaticText(self, label="Depth")
+        self.env_depth = DraggableNumber(self, id = 68, value=voice_dict["params"]["E4_VOICE_VOLENV_DEPTH"], min_val=0, max_val=16, callback = main._onAnyControlChanged)
+        
+        self.envelope_ctrls = [ 
+                self.atkrate1,
                 self.atkamt1,
                 self.atkrate2, 
                 self.atkamt2,
@@ -264,14 +293,15 @@ class Aux_Env_Ctrls(wx.Panel):
                 self.rlsrate1,
                 self.rlsamt1,
                 self.rlsrate2, 
-                self.rlsamt2,]
+                self.rlsamt2,
+                self.env_depth]
         
 
         labels = [
             label1, label2, label3, label4, label5, label6, label7, label8, label9, label10,
             label11, self.atkrate1, self.atkamt1, self.atkrate2, self.atkamt2, label16, 
             self.dcyrate1, self.dcyamt1, self.dcyrate2, self.dcyamt2,
-            label21, self.rlsrate1, self.rlsamt1, self.rlsrate2, self.rlsamt2,
+            label21, self.rlsrate1, self.rlsamt1, self.rlsrate2, self.rlsamt2,# label26, self.env_depth
         ]
         
 
@@ -284,8 +314,8 @@ class Aux_Env_Ctrls(wx.Panel):
         
             
         seg1 = [label2, label3, label7, label8, self.atkrate1, self.atkamt1,  
-                self.dcyrate1, self.dcyamt1, self.rlsrate1, self.rlsamt1, ] 
-    
+                self.dcyrate1, self.dcyamt1, self.rlsrate1, self.rlsamt1,self.env_depth ] 
+
         for label in seg1:
             label.SetBackgroundColour(wx.Colour(greencontrol)) 
             
@@ -294,14 +324,18 @@ class Aux_Env_Ctrls(wx.Panel):
         for label in seg2:
             label.SetBackgroundColour(wx.Colour(blue1))  
             
-        seg3 = [label11, label16,  label21, label7, label8,  label9, label10]   
+        seg3 = [label11, label16,  label21, label7, label8,  label9, label10, label26]   
         for label in seg3:
             label.SetBackgroundColour(wx.Colour(yellow))  
             
-
+        
         main_sizer.Add(grid_sizer, flag=wx.ALL, border=10)
         self.SetSizer(main_sizer)
         
+    def _forward_callback(self, event):
+        ctrl = event.GetEventObject()
+        self.main._onAnyControlChanged(event)
+        # print(ctrl.value)
         
 #====================================================================================================
 #====================================================================================================

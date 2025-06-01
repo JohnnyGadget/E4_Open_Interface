@@ -3,7 +3,7 @@ TODO_DEV_NOTES.txt
 
 [[[======= Build command =======================================]]]
 
-pyinstaller --onefile --hidden-import=mido.backends.rtmidi main.py
+pyinstaller --icon=e4oi_icon.ico --onefile  --hidden-import=mido.backends.rtmidi main.py
 
 [[[======= Build command =======================================]]]
 

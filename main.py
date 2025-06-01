@@ -20,7 +20,7 @@ from custom_widgets import DraggableNumber
 from midiglo import MidigloPanel
 from zones_panel import Voice_Zones_Panel
 from front_panel import FrontPanelFrame
-from metronome import MetronomePanel
+# from metronome import MetronomePanel
 from links_panel import Links_Panel
 from cc_frame import CCframe
 from help_dialog import HelpDialog
@@ -870,46 +870,14 @@ class MainFrame(wx.Frame):
         self.create_menu_bar()
         
         self.Bind(wx.EVT_CLOSE, self.on_close)
-        
-        # self.midi_popup = MidiConnectPopup(self, self.open_midi_ports)
+
         self.should_run_sysex_thread = True
         self.device_id = 1
-        # local_appdata = os.environ.get("LOCALAPPDATA",
-        #                                 os.path.expanduser("~"))
-        # cfg_dir = os.path.join(local_appdata, "E4OpenInterface")
-        # os.makedirs(cfg_dir, exist_ok=True)
 
-        # self.CFG_FILE = os.path.join(cfg_dir, "settings.ini")
-        # print("Config file will live at:", self.CFG_FILE)
-
-        # # 2) create FileConfig pointing at that full path
-        # self.cfg = wx.FileConfig(
-        #     localFilename=self.CFG_FILE,
-        #     style=wx.CONFIG_USE_LOCAL_FILE,
-        #     appName="E4 Open Interface"
-        # )
-
-        # # 3) read any existing settings
-        # self.out_name = self.cfg.Read("MIDI/OutPort", "")
-        # self.in_name  = self.cfg.Read("MIDI/InPort",  "")
-        
-        # print("Restored ports:", self.in_name, "→", self.out_name)
-        
-        # self.outport = None
-        # self.inport = None
-        # if not self.out_name or not self.in_name:
-        #     print("not self.out_name or not self.in_name", self.out_name, self.in_name)
-        #     self.connect_midi()
-        # else:
-        #     self.open_midi_ports(self.in_name, self.out_name, self.device_id)
 
         self.should_run_sysex_thread = True
         self.sysex_queue = None
-        self.sysex_send_delay = 0.02  # delay in seconds between messages (e.g. 50 ms)
-        
-
-        
-        
+        self.sysex_send_delay = 0.01  # delay in seconds between messages (e.g. 50 ms)
         
 
         self.num_params = 0
@@ -964,7 +932,7 @@ class MainFrame(wx.Frame):
         # self.test_button.Bind(wx.EVT_BUTTON, self.on_test)
         
         
-        self.cc_button = wx.Button(pnl, label="CC Ctrlrs")
+        self.cc_button = wx.Button(pnl, label="Midi Ctrlrs")
         strip.Add(self.cc_button, 0,wx.ALIGN_CENTER_VERTICAL|wx.LEFT, 5)
         self.cc_button.Bind(wx.EVT_BUTTON, self.on_cc)
         
@@ -1018,8 +986,8 @@ class MainFrame(wx.Frame):
 
         
         
-        self.metronome = MetronomePanel(pnl, self)
-        main_sizer.Add(self.metronome, 0, wx.EXPAND | wx.ALL, 10)
+        # self.metronome = MetronomePanel(pnl, self)
+        # main_sizer.Add(self.metronome, 0, wx.EXPAND | wx.ALL, 10)
         
         
         
@@ -1813,24 +1781,26 @@ class MainFrame(wx.Frame):
         """
         data: the concatenated SysEx dump payload (all 7-bit words, no F0/F7)
         """
+        print("\nPreset raw dump = ", data)
+        print(f"\nDecoding Preset dump")
+        payload = data[:]   # work on a copy
+        cursor = 0
+        parsed_data = {}
+        voices = []
         try:
-            payload = data[:]   # work on a copy
-            cursor = 0
-            parsed_data = {}  # short‐hand for self.parsed_data
-            voices = []
             
             # --- Preset Number (2 bytes → 14-bit word) ---
             raw14 = payload[cursor] | (payload[cursor+1] << 7)
             preset_number = raw14 - 1
             parsed_data['E4_PRESET_NUMBER'] = preset_number
-            print(f"E4_PRESET_NUMBER: {preset_number}")
+            print(f"\nE4_PRESET_NUMBER: {preset_number}")
             cursor += 2
 
             # --- Preset Name (16 ASCII bytes) ---
             name_bytes = payload[cursor:cursor+16]
             preset_name = ''.join(chr(b) for b in name_bytes if 32 <= b < 127).strip()
             parsed_data['E4_PRESET_NAME'] = preset_name
-            print(f"E4_PRESET_NAME: '{preset_name}'")
+            print(f"\nE4_PRESET_NAME: '{preset_name}'\n")
             cursor += 16
 
 
@@ -1853,11 +1823,14 @@ class MainFrame(wx.Frame):
                 if pid == 0 or pid == 1 or pid == 2 or pid == 3 or pid == 4 or pid == 5:
                     # raw7 is 0…127 but fine-tune is –64…+63
                     val7 = raw7 - 128 if raw7 >= 64 else raw7
+                    
+                    print("if pid == 0 or pid == 1 or", val7)
                 else:
                     val7 = decode_ctrl_param(raw14)
                 
                 name = global_param_names[pid]
-                global_params[name] = val7
+                # global_params[name] = val7
+                parsed_data[global_param_names[pid]] = val7
                 print(f"  {name}: {val7}")
                 cursor += 2
 
@@ -1922,9 +1895,9 @@ class MainFrame(wx.Frame):
                     cursor += 2
                     group = payload[cursor] | (payload[cursor+1] << 7)
                     group = raw14_zone >> 7
-                    print("skip byte") #========================================= skipping extra bytes. I don't know why they're there, but sometimes they are
+                    print("skip byte : Group = 0") #========================================= skipping extra bytes.
                                                                                 # the logic is, there is no group 0, so if group == 0 then that's not the right value,
-                                                                                # skipping the bytes until group is a value not 0 works.
+                                                                                # skipping the bytes until group is a value not 0 has worked so far, realigns the data correctly...
 
                 voice['group'] = group
                 print(f" Group Number: {group}")
@@ -1953,7 +1926,7 @@ class MainFrame(wx.Frame):
 
                 is_multisample = (raw14_sample == 127)
                 voice['is_multisample'] = is_multisample
-                print(f"\nVoice is Multisample? {is_multisample}")
+                print(f"\nVoice is Multisample? {is_multisample}\n")
 
                 # parse params 38..181
                 param_pids = list(range(38, 184))
@@ -2038,7 +2011,8 @@ class MainFrame(wx.Frame):
                             
                         name  = dump_param_names.get(pid, f"ID_{pid}")
                         voice_params[name] = val7
-                        print(f"   {name}: {val7}")
+                        if pid != 183:
+                            print(f"   {name}: {val7}")
                         cursor += 2
 
                 voice['params'] = voice_params
@@ -2057,7 +2031,7 @@ class MainFrame(wx.Frame):
                     # Try up to 5 times moving forward to find zone_count > 0
                     for _ in range(5):
                         if zone_count == 0:
-                            # print("skip byte")
+                            print("skip byte")
                             cursor += 2
                             raw14_zone = payload[cursor] | (payload[cursor+1] << 7)
                             zone_count = raw14_zone >> 7
@@ -2065,11 +2039,11 @@ class MainFrame(wx.Frame):
                             break
 
                     # If still zero, search backwards (with a safety limit to avoid infinite loop)
-                reverse_limit = 20
+                reverse_limit = 10
                 reverse_attempts = 0
                 while zone_count == 0 and reverse_attempts < reverse_limit:
                     cursor -= 2
-                    # print("reverse byte")
+                    print("reverse byte")
                     raw14_zone = payload[cursor] | (payload[cursor+1] << 7)
                     zone_count = raw14_zone >> 7
                     reverse_attempts += 1
@@ -2080,46 +2054,48 @@ class MainFrame(wx.Frame):
                     
                 print(f"\nVoice {v+1} : {zone_count} zones")
                 cursor += 2
-                if is_multisample:
-                    
-                
                 # --- parse each zone’s 13 words (26 bytes) ---
-                    zones = []
-                    # these are the sample-zone PIDs in order:
-                    zone_pids = [38, 39, 40, 42, 44,
-                                    45, 46, 47, 48, 49,
-                                    50, 51, 52]
-                    
-                    for z in range(zone_count):
-                        zone = {}
-                        print(f"  Zone {z+1}:")
-            
-                        for pid in zone_pids:
-                            raw14 = payload[cursor] | (payload[cursor+1] << 7)
-                            raw7  = raw14 >> 7
-                            if pid == 38 and raw7 == 0: 
-                                cursor += 2
-                                raw14 = payload[cursor] | (payload[cursor+1] << 7)
-                                raw7  = raw14 >> 7
+                zones      = []
+                zone_pids  = [38, 39, 40, 42, 44,
+                            45, 46, 47, 48, 49,
+                            50, 51, 52]
 
-                            # special-case signed pan and fine-tune
-                            if pid == 39 or pid == 40 or pid == 41 or pid == 42 or pid == 43:
-                                # raw7 is 0…127 but pan and fine-tune is –64…+63
-                                val7 = raw7 - 128 if raw7 >= 64 else raw7
-                            else:
-                                val7 = decode_ctrl_param(raw14)
-                                
-                            name  = dump_param_names.get(pid, f"ID_{pid}")
-                            zone[name] = val7
-                            print(f"    {name}: {val7}")
-                            cursor += 2
-                        
-                        zones.append(zone)
+                for z in range(zone_count):
+                    zone = {}
+                    print(f"  Zone {z+1}:")
 
-                    voice['zones'] = zones
-                    parsed_data['voices'].append(voice)
-                    voices.append(voice)
-                    
+                    for pid in zone_pids:
+
+                        # ---------------------------------------------------------------
+                        # Safe read: if we have < 2 bytes left, substitute zeros
+                        # ---------------------------------------------------------------
+                        if cursor + 1 < len(payload):
+                            lo  = payload[cursor]
+                            hi  = payload[cursor + 1]
+                        else:
+                            lo  = hi = 0              # pad with 0 so we can keep going
+
+                        raw14 = lo | (hi << 7)
+                        raw7  = raw14 >> 7
+                        cursor += 2                   # advance *as if* we had read two bytes
+
+                        # -----------------------------------------------------------
+                        # Decode, including signed special-case
+                        # -----------------------------------------------------------
+                        if pid in (39, 40, 41, 42, 43):            # signed 7-bit
+                            val7 = raw7 - 128 if raw7 >= 64 else raw7
+                        else:
+                            val7 = decode_ctrl_param(raw14)
+
+                        name = dump_param_names.get(pid, f"ID_{pid}")
+                        zone[name] = val7
+                        print(f"    {name}: {val7}")
+
+                    zones.append(zone)
+
+                voice['zones'] = zones
+                parsed_data['voices'].append(voice)
+                voices.append(voice)
 
             if is_multisample:
                 self.parsed_data = parsed_data
@@ -2153,9 +2129,10 @@ class MainFrame(wx.Frame):
             
     def update_panels(self, data):
         self.preset_name.SetLabel(data["E4_PRESET_NAME"])
-        self.preset_panel.preset.E4_PRESET_NAME.SetLabel(data["E4_PRESET_NAME"])
-        self.preset_panel.preset.E4_PRESET_NUMBER.SetLabel(str(data["E4_PRESET_NUMBER"]))
         self.current_preset = data["E4_PRESET_NUMBER"]
+        
+        self.preset_panel.update_params()
+        
         if data['num_voices'] > 0:
             self.voice_zones_panel.display_all_zones(data)
         if data['num_links'] > 0:
@@ -2242,19 +2219,21 @@ class MainFrame(wx.Frame):
 #===============================================================================================================
 #===============================================================================================================
 
-console_text = '''
-o--o o  o      o-o                    o-O-o       o           o-o             
-|    |  |     o   o                     |         |           |               
-O-o  o--O     |   | o-o  o-o o-o        |   o-o  -o- o-o o-o -O-  oo  o-o o-o 
-|       |     o   o |  | |-' |  |       |   |  |  |  |-' |    |  | | |    |-' 
-o--o    o      o-o  O-o  o-o o  o     o-O-o o  o  o  o-o o    o  o-o- o-o o-o 
-                    |                                                         
-                    o                                                         
+console_signature = '''
+
+[........                     [....                                     [..           [..                       [..                           
+[..            [..          [..    [..                                  [..           [..                     [.                              
+[..          [ [..        [..        [..[. [..     [..    [.. [..       [..[.. [..  [.[. [.   [..    [. [...[.[. [.   [..       [...   [..    
+[......     [. [..        [..        [..[.  [..  [.   [..  [..  [..     [.. [..  [..  [..   [.   [..  [..     [..   [..  [..  [..    [.   [.. 
+[..       [..  [..        [..        [..[.   [..[..... [.. [..  [..     [.. [..  [..  [..  [..... [.. [..     [..  [..   [.. [..    [..... [..
+[..      [.... [. [..       [..     [.. [.. [.. [.         [..  [..     [.. [..  [..  [..  [.         [..     [..  [..   [..  [..   [.        
+[........      [..            [....     [..       [....   [...  [..     [..[...  [..   [..   [....   [...     [..    [.. [...   [...  [....   
+                                        [..                                                                                                                                           
     
-┏┳  ┓            ┓     
- ┃┏┓┣┓┏┓┏┓┓┏┏┓┏┓┏┫┏┓┏┓╋
-┗┛┗┛┛┗┛┗┛┗┗┫┗┫┗┻┗┻┗┫┗ ┗
-           ┛ ┛     ┛   
+    ┏┳  ┓            ┓     
+~~   ┃┏┓┣┓┏┓┏┓┓┏┏┓┏┓┏┫┏┓┏┓╋
+    ┗┛┗┛┛┗┛┗┛┗┗┫┗┫┗┻┗┻┗┫┗ ┗
+               ┛ ┛     ┛   
     '''
 
 if __name__ == "__main__":
@@ -2262,21 +2241,8 @@ if __name__ == "__main__":
     app = wx.App(False)
     MainFrame().Show()
     app.MainLoop()
-    print(console_text)  # Should always print!
+    print(console_signature)
     
-#  _______ _     _    _______                      _                           ___                   
-# (_______) |   (_)  (_______)                    | |       _                 / __)                  
-#  _____  | |_____    _     _ ____  _____ ____    | |____ _| |_ _____  ____ _| |__ _____  ____ _____ 
-# |  ___) |_____  |  | |   | |  _ \| ___ |  _ \   | |  _ (_   _) ___ |/ ___|_   __|____ |/ ___) ___ |
-# | |_____      | |  | |___| | |_| | ____| | | |  | | | | || |_| ____| |     | |  / ___ ( (___| ____|
-# |_______)     |_|   \_____/|  __/|_____)_| |_|  |_|_| |_| \__)_____)_|     |_|  \_____|\____)_____)
-#                            |_|                                                                     
-
-# 
-# 
-# +-+-+ +-+-+-+-+-+-+-+-+-+-+-+-+
-# |b|y| |J|o|h|n|n|y|g|a|d|g|e|t|    
-# +-+-+ +-+-+-+-+-+-+-+-+-+-+-+-+ 
     
 
     

@@ -246,122 +246,116 @@ class DropDown(wx.Choice):
 
 
 
-# create a new command event for knob changes
-KnobEvent, EVT_KNOB = wx.lib.newevent.NewCommandEvent()
 
-class KnobCtrl(wx.Control):
-    def __init__(self, parent, id=wx.ID_ANY,
-                 min_val=0, max_val=100, initial=0,
-                 left_stop=135, right_stop=45,
-                 size=(60, 80), style=wx.BORDER_NONE):
-        super().__init__(parent, id, size=size, style=style)
-        self.min_val    = min_val
-        self.max_val    = max_val
-        self.value      = max(min(initial, max_val), min_val)
-        self.left_stop  = left_stop    # degrees (math coords)
-        self.right_stop = right_stop
-        self._dragging  = False
-        self._start_y   = 0
-        self._start_val = self.value
+NOTE_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 
-        # for crisp drawing
-        self.SetBackgroundStyle(wx.BG_STYLE_PAINT)
-        # bind events
-        self.Bind(wx.EVT_PAINT,       self.OnPaint)
-        self.Bind(wx.EVT_LEFT_DOWN,   self.OnLeftDown)
-        self.Bind(wx.EVT_MOTION,      self.OnMotion)
-        self.Bind(wx.EVT_LEFT_UP,     self.OnLeftUp)
+def note_number_to_name(n):
+    """Convert MIDI note number (0–127) to a string like 'C 2' or 'C# 3'."""
+    if not (0 <= n <= 127):
+        return "?"
+    note = NOTE_NAMES[n % 12]
+    octave = (n // 12) - 2
+    return f"{note} {octave}"
 
-    def OnPaint(self, evt):
-        dc = wx.AutoBufferedPaintDC(self)
-        w, h = self.GetClientSize()
-        # clear
-        dc.SetBrush(wx.Brush(self.GetBackgroundColour()))
-        dc.Clear()
+def note_name_to_number(name):
+    """Convert 'C 2' or 'C# 3' to integer, e.g. 0, 61."""
+    try:
+        note, octave = name.split()
+        octave = int(octave)
+        note_num = NOTE_NAMES.index(note)
+        return (octave + 2) * 12 + note_num
+    except Exception:
+        return 0
 
-        # knob circle
-        radius = min(w, h-20)//2 - 4
-        cx, cy = w//2, radius + 4
-        dc.SetPen(wx.Pen(wx.BLACK, 1))
-        dc.SetBrush(wx.Brush(wx.Colour(220,220,220)))
-        dc.DrawCircle(cx, cy, radius)
+class DraggableNoteSelector(wx.StaticText):
+    def __init__(self, parent,
+                id=wx.ID_ANY,
+                value=60,
+                min_val=0,
+                max_val=127,
+                step=1,
+                callback=None,
+                callback_click=None):
+        super().__init__(parent, id, label=note_number_to_name(value), style=wx.ALIGN_CENTER)
+        self.parent = parent
 
-        # compute angle for current value
-        start = self.left_stop % 360
-        end   = self.right_stop % 360
-        if end <= start:
-            end += 360
-        frac = (self.value - self.min_val) / (self.max_val - self.min_val)
-        angle = math.radians(start + frac*(end-start))
+        # state
+        self.value          = value
+        self.min_val        = min_val
+        self.max_val        = max_val
+        self.step           = step
+        self.callback       = callback
+        self.callback_click = callback_click
 
-        # marker line
-        mx = cx + math.cos(angle)*radius*0.8
-        my = cy - math.sin(angle)*radius*0.8
-        dc.SetPen(wx.Pen(wx.BLACK, 2))
-        dc.DrawLine(cx, cy, mx, my)
+        self.start_y = None
 
-        # value readout below
-        txt = str(self.value)
-        dc.SetFont(wx.Font(8, wx.FONTFAMILY_SWISS, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
-        tw, th = dc.GetTextExtent(txt)
-        dc.DrawText(txt, (w-tw)//2, h- th - 4)
+        # mouse events
+        self.Bind(wx.EVT_LEFT_DOWN, self.on_mouse_down)
+        self.Bind(wx.EVT_MOTION,    self.on_mouse_drag)
+        self.Bind(wx.EVT_LEFT_UP,   self.on_mouse_up)
 
-    def OnLeftDown(self, evt):
-        self._dragging  = True
-        self._start_y   = evt.GetY()
-        self._start_val = self.value
+        self.SetCursor(wx.Cursor(wx.CURSOR_SIZENS))
+
+    def on_mouse_down(self, event):
+        self.start_y = event.GetY()
         self.CaptureMouse()
+        if self.callback_click:
+            self.callback_click(event)
+        event.Skip()
 
-    def OnMotion(self, evt):
-        if not self._dragging or not evt.Dragging(): 
+    def on_mouse_drag(self, event):
+        if not (self.HasCapture() and event.Dragging() and event.LeftIsDown()):
+            event.Skip()
             return
-        dy = self._start_y - evt.GetY()
-        # 1 pixel = 1 unit (you can scale this)
-        new_val = self._start_val + dy
-        new_val = max(self.min_val, min(self.max_val, new_val))
-        if new_val != self.value:
-            self.value = new_val
-            self.Refresh()
+        
+        dy = self.start_y - event.GetY()
+        ctrl_held = event.ControlDown()
+        sensitivity = 16 if ctrl_held else 8   # try 8, 12, 16, etc.
+        if event.AltDown():
+            sensitivity = 2
 
-            # fire custom event
-            e = KnobEvent(self.GetId())
-            e.SetEventObject(self)
-            e.SetInt(self.value)
-            self.GetEventHandler().ProcessEvent(e)
+        delta = int(dy / sensitivity)
+        if delta:
+            new_value = max(self.min_val,
+                            min(self.max_val,
+                                self.value + delta*self.step))
+            if new_value != self.value:
+                self.value = new_value
+                self.SetLabel(note_number_to_name(self.value))
 
-    def OnLeftUp(self, evt):
+                if self.callback and (not hasattr(self, "_last_sent_value")
+                                    or self.value != self._last_sent_value):
+                    cmd = wx.CommandEvent(wx.wxEVT_COMMAND_BUTTON_CLICKED,
+                                        self.GetId())
+                    cmd.SetEventObject(self)
+                    cmd.SetInt(self.value)
+                    self.callback(cmd)
+                    self._last_sent_value = self.value
+
+            self.start_y = self.start_y - (delta * sensitivity)
+
+        event.Skip()
+
+    def on_mouse_up(self, event):
         if self.HasCapture():
             self.ReleaseMouse()
-        self._dragging = False
+        event.Skip()
 
-    def GetValue(self):
-        return self.value
+    def set_value(self, new_value):
+        new_value = max(self.min_val, min(self.max_val, new_value))
+        if new_value == self.value:
+            return
 
-    def SetValue(self, v):
-        v = max(self.min_val, min(self.max_val, v))
-        if v != self.value:
-            self.value = v
-            self.Refresh()
-            e = KnobEvent(self.GetId())
-            e.SetEventObject(self)
-            e.SetInt(self.value)
-            self.GetEventHandler().ProcessEvent(e)
+        self.value = new_value
+        self.SetLabel(note_number_to_name(self.value))
 
+        if self.callback:
+            cmd = wx.CommandEvent(wx.wxEVT_COMMAND_BUTTON_CLICKED,
+                                    self.GetId())
+            cmd.SetEventObject(self)
+            cmd.SetInt(self.value)
+            self.callback(cmd)
 
-
-
-
-class Demo(wx.Frame):
-    def __init__(self):
-        super().__init__(None, title="Knob Demo")
-        knob = KnobCtrl(self, min_val=0, max_val=127, initial=64,
-                        left_stop=135, right_stop=45)
-        knob.Bind(EVT_KNOB, lambda e: print("Knob:", e.GetInt()))
-        s = wx.BoxSizer(wx.VERTICAL)
-        s.Add(knob, 0, wx.ALL|wx.CENTER, 20)
-        self.SetSizer(s)
-        self.Fit()
-        self.Show()
 
 
 

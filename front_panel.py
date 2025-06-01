@@ -420,9 +420,12 @@ class FrontPanelFrame(wx.Panel):
         if self.do_use_keyboard == False:
             self.do_use_keyboard = True
             self.use_keyboard_btn.SetBackgroundColour(wx.Colour(153, 245, 198))
+            self.main.ccframe.pc_key_enabled = False
+            self.main.ccframe.keyboard_controls.pc_key_toggle.SetBackgroundColour("medium grey")
         else:
             self.do_use_keyboard = False
             self.use_keyboard_btn.SetBackgroundColour("medium grey")
+            
     def on_use_mousescroll(self, evt):
         if self.do_use_scroll == False:
             self.do_use_scroll = True

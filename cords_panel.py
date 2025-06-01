@@ -637,7 +637,7 @@ class source_selector(wx.ComboBox):
         self.SetSelection(0)
         self.SetMinSize((160, -1))
         self.SetMaxSize((160, -1))
-        self.Bind(wx.EVT_COMBOBOX, partial(callback, custom_value="source"))
+        self.Bind(wx.EVT_COMBOBOX, callback)
         # main.controls.combo_by_id[id] = self
         
 dst_items = [f"{v}" for k, v in sorted(DEST_OPTIONS.items())]
@@ -647,7 +647,7 @@ class destination_selector(wx.ComboBox):
         self.SetSelection(0)
         self.SetMinSize((160, -1))
         self.SetMaxSize((160, -1))
-        self.Bind(wx.EVT_COMBOBOX, partial(callback, custom_value="destination"))  
+        self.Bind(wx.EVT_COMBOBOX, callback)  
         # main.controls.combo_by_id[id] = self
 
 
@@ -862,7 +862,9 @@ class CordsPanel(wx.Panel):
         ctrl = evt.GetEventObject()
         wId = ctrl.GetId()
         value = ctrl.GetSelection()
+        print(ctrl, wId, value)
         value = SOURCE_OPTIONS_INDEX[value]
+        print(ctrl, wId, value)
         self.main.send_parameter_edit(wId, value)
         
     def destination_select(self, evt):
