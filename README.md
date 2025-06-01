@@ -45,8 +45,8 @@ pip install mido[ports-rtmidi]
 ```
 
 * Build Command *
-*   
-pyinstaller --onefile --hidden-import=mido.backends.rtmidi main.py
+  
+pyinstaller --icon=e4oi_icon.ico --onefile  --hidden-import=mido.backends.rtmidi main.py
 
 
 
