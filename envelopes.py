@@ -324,7 +324,7 @@ amp_env_depths = {
 # EnvelopeFrame: Main frame that houses the envelope display and controls.
 # --------------------------------------------------
 class AmpEnvelopePanel(wx.Panel):
-    def __init__(self, parent, envelope_controls, amp_env_depth_ctrl, voice_dict, main):
+    def __init__(self, parent, envelope_controls, voice_dict, main):
         super().__init__(parent)
         main_sizer = wx.BoxSizer(wx.VERTICAL)
         panel = self
@@ -351,7 +351,7 @@ class AmpEnvelopePanel(wx.Panel):
         self.rlsamt2 = envelope_controls[11]
         
         # self.env_depth = envelope_controls[12]
-        self.amp_env_depth_ctrl = amp_env_depth_ctrl
+        # self.amp_env_depth_ctrl = amp_env_depth_ctrl
         
         self.atkrate1.Bind(EVT_DRAGGABLENUMBER, self.on_ctrl_change)
         self.atkamt1.Bind(EVT_DRAGGABLENUMBER, self.on_ctrl_change)
@@ -366,7 +366,7 @@ class AmpEnvelopePanel(wx.Panel):
         self.rlsrate2.Bind(EVT_DRAGGABLENUMBER, self.on_ctrl_change)
         self.rlsamt2.Bind(EVT_DRAGGABLENUMBER, self.on_ctrl_change)
         # self.env_depth.Bind(EVT_DRAGGABLENUMBER, self.on_ctrl_change)
-        self.amp_env_depth_ctrl.Bind(wx.EVT_COMBOBOX, self.on_ctrl_change)
+        # self.amp_env_depth_ctrl.Bind(wx.EVT_COMBOBOX, self.on_ctrl_change)
     # handler signature
         self.load_up()
         self.Center()
@@ -597,6 +597,15 @@ class FilterEnvelopeDisplay(wx.Panel):
         stroke = gc.CreatePath(); stroke.MoveToPoint(xs[0],ys[0])
         for x,y in zip(xs[1:],ys[1:]): stroke.AddLineToPoint(x,y)
         gc.StrokePath(stroke)
+        
+        # draw 2 vertical grid lines
+        pen_vert = wx.Pen(wx.Colour(200,200,200), 1, wx.PENSTYLE_DOT)
+        dc.SetPen(pen_vert)
+        # y_full is your top_margin, y_zero is bottom line
+        for idx in (2, 4):
+            x = xs[idx]
+            dc.DrawLine(int(x), int(y_top), int(x), int(y_bot))
+
         for x,y in zip(xs,ys):
             gc.SetBrush(wx.Brush(wx.Colour("blue")))
             gc.DrawEllipse(x-self.point_r,y-self.point_r,
@@ -670,7 +679,7 @@ class FilterEnvelopeDisplay(wx.Panel):
 # EnvelopeFrame: Main frame that houses the envelope display and controls.
 # --------------------------------------------------
 class FilterEnvelopePanel(wx.Panel):
-    def __init__(self, parent, envelope_controls, amp_env_depth_ctrl, voice_dict, main):
+    def __init__(self, parent, envelope_controls, voice_dict, main):
         super().__init__(parent)
         main_sizer = wx.BoxSizer(wx.VERTICAL)
         panel = self
@@ -697,7 +706,7 @@ class FilterEnvelopePanel(wx.Panel):
         self.rlsamt2 = envelope_controls[11]
         
         # self.env_depth = envelope_controls[12]
-        self.amp_env_depth_ctrl = amp_env_depth_ctrl
+        # self.amp_env_depth_ctrl = amp_env_depth_ctrl
         
         self.atkrate1.Bind(EVT_DRAGGABLENUMBER, self.on_ctrl_change)
         self.atkamt1.Bind(EVT_DRAGGABLENUMBER, self.on_ctrl_change)
@@ -712,7 +721,7 @@ class FilterEnvelopePanel(wx.Panel):
         self.rlsrate2.Bind(EVT_DRAGGABLENUMBER, self.on_ctrl_change)
         self.rlsamt2.Bind(EVT_DRAGGABLENUMBER, self.on_ctrl_change)
         # self.env_depth.Bind(EVT_DRAGGABLENUMBER, self.on_ctrl_change)
-        self.amp_env_depth_ctrl.Bind(wx.EVT_COMBOBOX, self.on_ctrl_change)
+        # self.amp_env_depth_ctrl.Bind(wx.EVT_COMBOBOX, self.on_ctrl_change)
     # handler signature
         self.load_up()
         self.Center()
@@ -966,12 +975,20 @@ class AuxEnvelopeDisplay(wx.Panel):
         path.AddLineToPoint(xs[-1], y_bot); path.AddLineToPoint(xs[0], y_bot)
         path.CloseSubpath()
         brush = gc.CreateLinearGradientBrush(left,y_top,left,y_bot,
-                    wx.Colour(50,255,150,120), wx.Colour(50,150,255,10))
+                    wx.Colour(255,50,150,120), wx.Colour(50,150,255,10))
         
         gc.SetBrush(brush); gc.FillPath(path)
         gc.SetPen(gc.CreatePen(wx.Pen(wx.Colour("green"),2)))
         stroke = gc.CreatePath(); stroke.MoveToPoint(xs[0],ys[0])
         for x,y in zip(xs[1:],ys[1:]): stroke.AddLineToPoint(x,y)
+        
+        # draw 2 vertical grid lines
+        pen_vert = wx.Pen(wx.Colour(200,200,200), 1, wx.PENSTYLE_DOT)
+        dc.SetPen(pen_vert)
+        for idx in (2, 4):
+            x = xs[idx]
+            dc.DrawLine(int(x), int(y_top), int(x), int(y_bot))
+        
         gc.StrokePath(stroke)
         for x,y in zip(xs,ys):
             gc.SetBrush(wx.Brush(wx.Colour("blue")))
@@ -1054,7 +1071,7 @@ class AuxEnvelopeDisplay(wx.Panel):
 # EnvelopeFrame: Main frame that houses the envelope display and controls.
 # --------------------------------------------------
 class AuxEnvelopePanel(wx.Panel):
-    def __init__(self, parent, envelope_controls, amp_env_depth_ctrl, voice_dict, main):
+    def __init__(self, parent, envelope_controls, voice_dict, main):
         super().__init__(parent)
         main_sizer = wx.BoxSizer(wx.VERTICAL)
         panel = self
@@ -1081,7 +1098,7 @@ class AuxEnvelopePanel(wx.Panel):
         self.rlsamt2 = envelope_controls[11]
         
         # self.env_depth = envelope_controls[12]
-        self.amp_env_depth_ctrl = amp_env_depth_ctrl
+        # self.amp_env_depth_ctrl = amp_env_depth_ctrl
         
         self.atkrate1.Bind(EVT_DRAGGABLENUMBER, self.on_ctrl_change)
         self.atkamt1.Bind(EVT_DRAGGABLENUMBER, self.on_ctrl_change)
@@ -1096,7 +1113,7 @@ class AuxEnvelopePanel(wx.Panel):
         self.rlsrate2.Bind(EVT_DRAGGABLENUMBER, self.on_ctrl_change)
         self.rlsamt2.Bind(EVT_DRAGGABLENUMBER, self.on_ctrl_change)
         # self.env_depth.Bind(EVT_DRAGGABLENUMBER, self.on_ctrl_change)
-        self.amp_env_depth_ctrl.Bind(wx.EVT_COMBOBOX, self.on_ctrl_change)
+        # self.amp_env_depth_ctrl.Bind(wx.EVT_COMBOBOX, self.on_ctrl_change)
     # handler signature
         self.load_up()
         self.Center()

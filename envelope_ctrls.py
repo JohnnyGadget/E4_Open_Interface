@@ -16,7 +16,7 @@ orangelight = (245, 220, 162, 0)
 #====================================================================================================
 
 class Amp_Env_Ctrls(wx.Panel):
-    def __init__(self, parent, parent_panel, label, main, amp_env_depth_ctrl, voice_dict):
+    def __init__(self, parent, parent_panel, label, main, voice_dict):
         super().__init__(parent_panel)
 
         main_sizer = wx.BoxSizer(wx.VERTICAL)
@@ -54,8 +54,8 @@ class Amp_Env_Ctrls(wx.Panel):
         self.rlsrate2 = DraggableNumber(self, id = 80, value=voice_dict["params"]["E4_VOICE_VENV_SEG5_RATE"], min_val=0, max_val=127, callback = main._onAnyControlChanged)
         self.rlsamt2 = DraggableNumber(self, id = 81, value=voice_dict["params"]["E4_VOICE_VENV_SEG5_TGTLVL"], min_val=0, max_val=100, callback = main._onAnyControlChanged)
         
-        label26 = wx.StaticText(self, label="Depth")
-        self.env_depth = DraggableNumber(self, id = 68, value=voice_dict["params"]["E4_VOICE_VOLENV_DEPTH"], min_val=0, max_val=16, callback = main._onAnyControlChanged)
+        # label26 = wx.StaticText(self, label="Depth")
+        # self.env_depth = DraggableNumber(self, id = 68, value=voice_dict["params"]["E4_VOICE_VOLENV_DEPTH"], min_val=0, max_val=16, callback = main._onAnyControlChanged)
         
         self.envelope_ctrls = [ 
                 self.atkrate1,
@@ -71,8 +71,8 @@ class Amp_Env_Ctrls(wx.Panel):
                 self.rlsrate1,
                 self.rlsamt1,
                 self.rlsrate2, 
-                self.rlsamt2,
-                self.env_depth]
+                self.rlsamt2]
+                # self.env_depth]
         
 
         labels = [
@@ -92,7 +92,7 @@ class Amp_Env_Ctrls(wx.Panel):
         
             
         seg1 = [label2, label3, label7, label8, self.atkrate1, self.atkamt1,  
-                self.dcyrate1, self.dcyamt1, self.rlsrate1, self.rlsamt1,self.env_depth ] 
+                self.dcyrate1, self.dcyamt1, self.rlsrate1, self.rlsamt1] #,self.env_depth ] 
 
         for label in seg1:
             label.SetBackgroundColour(wx.Colour(greencontrol)) 
@@ -102,7 +102,7 @@ class Amp_Env_Ctrls(wx.Panel):
         for label in seg2:
             label.SetBackgroundColour(wx.Colour(blue1))  
             
-        seg3 = [label11, label16,  label21, label7, label8,  label9, label10, label26]   
+        seg3 = [label11, label16,  label21, label7, label8,  label9, label10]#, label26]   
         for label in seg3:
             label.SetBackgroundColour(wx.Colour(yellow))  
             
@@ -120,7 +120,7 @@ class Amp_Env_Ctrls(wx.Panel):
 #====================================================================================================
 #==================================    FILTER  ==================================================================
 class Filter_Env_Ctrls(wx.Panel):
-    def __init__(self, parent, parent_panel, label, main, amp_env_depth_ctrl, voice_dict):
+    def __init__(self, parent, parent_panel, label, main, voice_dict):
         super().__init__(parent_panel)
 
         main_sizer = wx.BoxSizer(wx.VERTICAL)
@@ -158,9 +158,7 @@ class Filter_Env_Ctrls(wx.Panel):
         self.rlsrate2 = DraggableNumber(self, id = 103, value=voice_dict["params"]["E4_VOICE_FENV_SEG5_RATE"], min_val=0, max_val=127, callback = main._onAnyControlChanged)
         self.rlsamt2 = DraggableNumber(self, id = 104, value=voice_dict["params"]["E4_VOICE_FENV_SEG5_TGTLVL"], min_val=-100, max_val=100, callback = main._onAnyControlChanged)
         
-        label26 = wx.StaticText(self, label="Depth")
-        self.env_depth = DraggableNumber(self, id = 68, value=voice_dict["params"]["E4_VOICE_VOLENV_DEPTH"], min_val=0, max_val=16, callback = main._onAnyControlChanged)
-        
+
         self.envelope_ctrls = [ 
                 self.atkrate1,
                 self.atkamt1,
@@ -175,15 +173,15 @@ class Filter_Env_Ctrls(wx.Panel):
                 self.rlsrate1,
                 self.rlsamt1,
                 self.rlsrate2, 
-                self.rlsamt2,
-                self.env_depth]
+                self.rlsamt2]
+
         
 
         labels = [
             label1, label2, label3, label4, label5, label6, label7, label8, label9, label10,
             label11, self.atkrate1, self.atkamt1, self.atkrate2, self.atkamt2, label16, 
             self.dcyrate1, self.dcyamt1, self.dcyrate2, self.dcyamt2,
-            label21, self.rlsrate1, self.rlsamt1, self.rlsrate2, self.rlsamt2,# label26, self.env_depth
+            label21, self.rlsrate1, self.rlsamt1, self.rlsrate2, self.rlsamt2
         ]
         
 
@@ -196,7 +194,7 @@ class Filter_Env_Ctrls(wx.Panel):
         
             
         seg1 = [label2, label3, label7, label8, self.atkrate1, self.atkamt1,  
-                self.dcyrate1, self.dcyamt1, self.rlsrate1, self.rlsamt1,self.env_depth ] 
+                self.dcyrate1, self.dcyamt1, self.rlsrate1, self.rlsamt1] 
 
         for label in seg1:
             label.SetBackgroundColour(wx.Colour(greencontrol)) 
@@ -206,7 +204,7 @@ class Filter_Env_Ctrls(wx.Panel):
         for label in seg2:
             label.SetBackgroundColour(wx.Colour(blue1))  
             
-        seg3 = [label11, label16,  label21, label7, label8,  label9, label10, label26]   
+        seg3 = [label11, label16,  label21, label7, label8,  label9, label10]
         for label in seg3:
             label.SetBackgroundColour(wx.Colour(yellow))  
             
@@ -237,7 +235,7 @@ class Filter_Env_Ctrls(wx.Panel):
 #==================================    aux  ==================================================================
         
 class Aux_Env_Ctrls(wx.Panel):
-    def __init__(self, parent, parent_panel, label, main, amp_env_depth_ctrl, voice_dict):
+    def __init__(self, parent, parent_panel, label, main, voice_dict):
         super().__init__(parent_panel)
 
         main_sizer = wx.BoxSizer(wx.VERTICAL)
@@ -276,8 +274,7 @@ class Aux_Env_Ctrls(wx.Panel):
         self.rlsrate2 = DraggableNumber(self, id = 127, value=voice_dict["params"]["E4_VOICE_AENV_SEG5_RATE"], min_val=0, max_val=127, callback = main._onAnyControlChanged)
         self.rlsamt2 = DraggableNumber(self, id = 128, value=voice_dict["params"]["E4_VOICE_AENV_SEG5_TGTLVL"], min_val=-100, max_val=100, callback = main._onAnyControlChanged)
         
-        label26 = wx.StaticText(self, label="Depth")
-        self.env_depth = DraggableNumber(self, id = 68, value=voice_dict["params"]["E4_VOICE_VOLENV_DEPTH"], min_val=0, max_val=16, callback = main._onAnyControlChanged)
+
         
         self.envelope_ctrls = [ 
                 self.atkrate1,
@@ -293,15 +290,15 @@ class Aux_Env_Ctrls(wx.Panel):
                 self.rlsrate1,
                 self.rlsamt1,
                 self.rlsrate2, 
-                self.rlsamt2,
-                self.env_depth]
+                self.rlsamt2]
+
         
 
         labels = [
             label1, label2, label3, label4, label5, label6, label7, label8, label9, label10,
             label11, self.atkrate1, self.atkamt1, self.atkrate2, self.atkamt2, label16, 
             self.dcyrate1, self.dcyamt1, self.dcyrate2, self.dcyamt2,
-            label21, self.rlsrate1, self.rlsamt1, self.rlsrate2, self.rlsamt2,# label26, self.env_depth
+            label21, self.rlsrate1, self.rlsamt1, self.rlsrate2, self.rlsamt2
         ]
         
 
@@ -314,7 +311,7 @@ class Aux_Env_Ctrls(wx.Panel):
         
             
         seg1 = [label2, label3, label7, label8, self.atkrate1, self.atkamt1,  
-                self.dcyrate1, self.dcyamt1, self.rlsrate1, self.rlsamt1,self.env_depth ] 
+                self.dcyrate1, self.dcyamt1, self.rlsrate1, self.rlsamt1]
 
         for label in seg1:
             label.SetBackgroundColour(wx.Colour(greencontrol)) 
@@ -324,7 +321,7 @@ class Aux_Env_Ctrls(wx.Panel):
         for label in seg2:
             label.SetBackgroundColour(wx.Colour(blue1))  
             
-        seg3 = [label11, label16,  label21, label7, label8,  label9, label10, label26]   
+        seg3 = [label11, label16,  label21, label7, label8,  label9, label10]  
         for label in seg3:
             label.SetBackgroundColour(wx.Colour(yellow))  
             

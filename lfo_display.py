@@ -254,16 +254,17 @@ class LFO1(wx.Panel):
         
             
         seg1 = [self.label2, self.label4, self.label6, self.label8] 
-           
+
         for label in seg1:
             label.SetBackgroundColour(wx.Colour(greencontrol)) 
             
+        self.onChange()
         main_sizer.Add(grid_sizer, flag=wx.ALL, border=10)
         self.SetSizer(main_sizer)
         
 
-    def onChange(self, event):
-       
+    def onChange(self, event = None):
+
         rate = self.label4.value
         delay = self.label6.value
         phase = self.label8.value
@@ -275,20 +276,20 @@ class LFO1(wx.Panel):
         self.label5.SetLabel(f"Delay: {delay}")
         self.label7.SetLabel(f"Variation: {phase}%")
         self.display.update_display(rate, shape, delay, phase, sync)
-        
-        ctrl = event.GetEventObject()   
-        if ctrl.Id == 109:
-            checked = event.GetInt()
-            if checked == 1:
-                checked = 0
+        if event != None:
+            ctrl = event.GetEventObject()   
+            if ctrl.Id == 109:
+                checked = event.GetInt()
+                if checked == 1:
+                    checked = 0
+                else:
+                    checked = 1
+                self.main.send_parameter_edit(109, checked)
+            elif ctrl.Id == 106:
+                idx = ctrl.GetSelection()
+                self.main.send_parameter_edit(106, idx)
             else:
-                checked = 1
-            self.main.send_parameter_edit(109, checked)
-        elif ctrl.Id == 106:
-            idx = ctrl.GetSelection()
-            self.main.send_parameter_edit(106, idx)
-        else:
-            self.main.send_parameter_edit(ctrl.Id, ctrl.value)
+                self.main.send_parameter_edit(ctrl.Id, ctrl.value)
             
     def update(self):
         rate = self.label4.value
@@ -379,16 +380,17 @@ class LFO2(wx.Panel):
         
             
         seg1 = [self.label2, self.label4, self.label6, self.label8, self.label10, self.label12] 
-           
+
         for label in seg1:
             label.SetBackgroundColour(wx.Colour(greencontrol)) 
             
+        self.onChange()
         main_sizer.Add(grid_sizer, flag=wx.ALL, border=10)
         self.SetSizer(main_sizer)
         
 
-    def onChange(self, event):
-       
+    def onChange(self, event = None):
+
         rate = self.label4.value
         delay = self.label6.value
         phase = self.label8.value
@@ -400,21 +402,21 @@ class LFO2(wx.Panel):
         self.label5.SetLabel(f"Delay: {delay}")
         self.label7.SetLabel(f"Variation: {phase}%")
         self.display.update_display(rate, shape, delay, phase, sync)
-        ctrl = event.GetEventObject()
-       
-            
-        if ctrl.Id == 114:
-            checked = event.GetInt()
-            if checked == 1:
-                checked = 0
+        
+        if event != None:
+            ctrl = event.GetEventObject()
+            if ctrl.Id == 114:
+                checked = event.GetInt()
+                if checked == 1:
+                    checked = 0
+                else:
+                    checked = 1
+                self.main.send_parameter_edit(114, checked)
+            elif ctrl.Id == 111:
+                idx = ctrl.GetSelection()
+                self.main.send_parameter_edit(111, idx)
             else:
-                checked = 1
-            self.main.send_parameter_edit(114, checked)
-        elif ctrl.Id == 111:
-            idx = ctrl.GetSelection()
-            self.main.send_parameter_edit(111, idx)
-        else:
-            self.main.send_parameter_edit(ctrl.Id, ctrl.value)
+                self.main.send_parameter_edit(ctrl.Id, ctrl.value)
 
     def update(self):
         rate = self.label4.value

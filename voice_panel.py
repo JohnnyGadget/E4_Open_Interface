@@ -93,7 +93,7 @@ class EditVoicePanel(scrolled.ScrolledPanel):
 
         # === Inner content ===
         self.amplifier = Amplifier(self.amplifier_panel, main=main, voice_dict = voice_dict, controls = self.controls, v_idx = v_idx)
-        self.amp_env_depth_ctrl = self.amplifier.amp_env_depth
+        # self.amp_env_depth_ctrl = self.amplifier.amp_env_depth
         # === Sizer setup ===
 
         amplifier_sizer.Add(self.amplifier, 1, wx.EXPAND | wx.ALL, 10)
@@ -182,7 +182,7 @@ class EditVoicePanel(scrolled.ScrolledPanel):
         ampenvctrls_sizer = wx.StaticBoxSizer(ampenvctrls_box, wx.VERTICAL)
 
         # Add the custom envelope display inside the StaticBoxSizer
-        self.amp_env_ctrls = Amp_Env_Ctrls(self.amp_env_ctrls_panel, self.amp_env_ctrls_panel, "Amp Envelope", main, self.amp_env_depth_ctrl, voice_dict)
+        self.amp_env_ctrls = Amp_Env_Ctrls(self.amp_env_ctrls_panel, self.amp_env_ctrls_panel, "Amp Envelope", main, voice_dict)
         ampenvctrls_sizer.Add(self.amp_env_ctrls, 1, wx.EXPAND | wx.ALL, 10)
 
         # Set the sizer and layout
@@ -206,7 +206,7 @@ class EditVoicePanel(scrolled.ScrolledPanel):
 
         # Add the custom envelope display inside the StaticBoxSizer
         
-        self.amp_env = AmpEnvelopePanel(self.amp_env_panel, self.envActrls, self.amp_env_depth_ctrl, voice_dict, main = main)
+        self.amp_env = AmpEnvelopePanel(self.amp_env_panel, self.envActrls, voice_dict, main = main)
         ampenv_sizer.Add(self.amp_env, 1, wx.EXPAND | wx.ALL, 10)
 
         # Set the sizer and layout
@@ -232,7 +232,7 @@ class EditVoicePanel(scrolled.ScrolledPanel):
         filterenvctrls_sizer = wx.StaticBoxSizer(filterenvctrls_box, wx.VERTICAL)
 
         # Add the custom envelope display inside the StaticBoxSizer
-        self.filter_env_ctrls = Filter_Env_Ctrls(self.filter_env_ctrls_panel, self.filter_env_ctrls_panel, "Filter Envelope", main, self.amp_env_depth_ctrl, voice_dict)
+        self.filter_env_ctrls = Filter_Env_Ctrls(self.filter_env_ctrls_panel, self.filter_env_ctrls_panel, "Filter Envelope", main, voice_dict)
         filterenvctrls_sizer.Add(self.filter_env_ctrls, 1, wx.EXPAND | wx.ALL, 10)
 
         # Set the sizer and layout
@@ -256,7 +256,7 @@ class EditVoicePanel(scrolled.ScrolledPanel):
 
         # Add the custom envelope display inside the StaticBoxSizer
         
-        self.filter_env = FilterEnvelopePanel(self.filter_env_panel, self.envFctrls, self.amp_env_depth_ctrl, voice_dict, main = main)
+        self.filter_env = FilterEnvelopePanel(self.filter_env_panel, self.envFctrls, voice_dict, main = main)
         filterenv_sizer.Add(self.filter_env, 1, wx.EXPAND | wx.ALL, 10)
 
         # Set the sizer and layout
@@ -285,7 +285,7 @@ class EditVoicePanel(scrolled.ScrolledPanel):
         auxenvctrls_sizer = wx.StaticBoxSizer(auxenvctrls_box, wx.VERTICAL)
 
         # Add the custom envelope display inside the StaticBoxSizer
-        self.aux_env_ctrls = Aux_Env_Ctrls(self.aux_env_ctrls_panel, self.aux_env_ctrls_panel, "Aux Envelope",  main, self.amp_env_depth_ctrl, voice_dict)
+        self.aux_env_ctrls = Aux_Env_Ctrls(self.aux_env_ctrls_panel, self.aux_env_ctrls_panel, "Aux Envelope",  main, voice_dict)
         auxenvctrls_sizer.Add(self.aux_env_ctrls, 1, wx.EXPAND | wx.ALL, 10)
 
         # Set the sizer and layout
@@ -309,7 +309,7 @@ class EditVoicePanel(scrolled.ScrolledPanel):
 
         # Add the custom envelope display inside the StaticBoxSizer
         
-        self.aux_env = AuxEnvelopePanel(self.aux_env_panel, self.envAuxctrls, self.amp_env_depth_ctrl, voice_dict, main = main)
+        self.aux_env = AuxEnvelopePanel(self.aux_env_panel, self.envAuxctrls, voice_dict, main = main)
         auxenv_sizer.Add(self.aux_env, 1, wx.EXPAND | wx.ALL, 10)
 
         # Set the sizer and layout
