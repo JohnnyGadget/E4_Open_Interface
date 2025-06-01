@@ -13,7 +13,7 @@ This software is an interface for Emu EOS on the Emu E4 Sampler. Written in Pyth
 
 ![fullscreen](https://github.com/user-attachments/assets/18129dc0-ed18-4595-9033-91184ed57da6)
 
-All are Encouraged to modify it as they see fit and make Commit requests to the primary project.
+All are Encouraged to modify it as they see fit.
 
 
 ### ✍️ Authors
@@ -52,13 +52,6 @@ pyinstaller --icon=e4oi_icon.ico --onefile  --hidden-import=mido.backends.rtmidi
 
 
 
-And be sure to specify any other minimum requirements like Python versions or operating systems.
-
-*You may be inclined to add development instructions here, don't.*
-
 
 ## 💭 Feedback and Contributing
 
-Add a link to the Discussions tab in your repo and invite users to open issues for bugs/feature requests.
-
-This is also a great place to invite others to contribute in any ways that make sense for your project. Point people to your DEVELOPMENT and/or CONTRIBUTING guides if you have them.
