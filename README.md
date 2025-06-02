@@ -4,7 +4,8 @@
 ## 🌟 Highlights
 
 - Editing Preset parameters on the Emu E4 Sampler made easy!
-- Get the pre-release EXE here > [E4 Open Interface pre-release v.111](https://github.com/JohnnyGadget/E4_Open_Interface/releases/tag/pre-release)
+- Get the pre-release EXE here > [E4 Open Interface pre-release b](https://github.com/JohnnyGadget/E4_Open_Interface/releases/tag/pre_release_b)
+- pre_release b fixes the Preset Name error, and the error in the master effects section. You can now successfully update the name of the preset on the E4 by typing the name into the Ui and pressing Enter.
 
 
 ## ℹ️ Overview
